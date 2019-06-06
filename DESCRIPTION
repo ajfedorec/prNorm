@@ -1,0 +1,13 @@
+Package: prNorm
+Type: Package
+Title: Perform normalisation of plate reader data
+Version: 0.1.0
+Author: Alex J H Fedorec
+Maintainer: Alex J H Fedorec <alexander.fedorec.13@ucl.ac.uk>
+Description: Normalises optical density data against a media blank and fluorescence data against a negative control.
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Imports:
+  dplyr
+RoxygenNote: 6.1.1
