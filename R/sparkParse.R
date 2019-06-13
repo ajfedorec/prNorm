@@ -61,6 +61,8 @@ sparkParse <- function(data_csv, layout_csv) {
   # rearrange data
   well_idx <- which(names(all_data) == "well")
   gathered_data <- tidyr::gather(all_data, key = "time", value = p, -c(1:well_idx, ncol(all_data)))
+  gathered_data$time <- as.numeric(gathered_data$time)
+  gathered_data$p <- as.numeric(gathered_data$p)
   spread_data <- tidyr::spread(gathered_data, key = measure, value = p)
 
   return(spread_data)
