@@ -65,5 +65,9 @@ sparkParse <- function(data_csv, layout_csv) {
   gathered_data$p <- as.numeric(gathered_data$p)
   spread_data <- tidyr::spread(gathered_data, key = measure, value = p)
 
+  spread_data$row <- substr(x = spread_data$well, start = 1, stop = 1)
+  spread_data$column <- as.numeric(substr(x = spread_data$well, start = 2, stop = nchar(spread_data$well)))
+  spread_data <- dplyr::arrange_at(spread_data, dplyr::vars(time, row, column))
+
   return(spread_data)
 }
