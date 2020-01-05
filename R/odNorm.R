@@ -13,10 +13,10 @@ odNorm <- function(pr_data, blank_well, OD_name) {
 
   for (timepoint in unique(pr_data$time)) {
     timepoint_normalised_OD <- (pr_data %>%
-                                  filter(time == timepoint))[[OD_name]] -
+                                  dplyr::filter(time == timepoint))[[OD_name]] -
       (pr_data %>%
-         filter(time == timepoint) %>%
-         filter(well == blank_well))[[OD_name]]
+         dplyr::filter(time == timepoint) %>%
+         dplyr::filter(well == blank_well))[[OD_name]]
 
     normalised_OD <- c(normalised_OD, timepoint_normalised_OD)
   }

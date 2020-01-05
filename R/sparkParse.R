@@ -7,10 +7,10 @@
 #' @export
 #'
 sparkParse <- function(data_csv, layout_csv) {
-  data <- read.table(data_csv, sep = ",", blank.lines.skip = T, header = F,
+  data <- utils::read.table(data_csv, sep = ",", blank.lines.skip = T, header = F,
                      stringsAsFactors = F)
 
-  plate_layout <- read.csv(layout_csv)
+  plate_layout <- utils::read.csv(layout_csv)
 
   start_time_idx <- which(data[,1] == "Start Time")
   if (length(start_time_idx) > 1) {

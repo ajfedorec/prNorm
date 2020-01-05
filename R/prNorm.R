@@ -17,7 +17,7 @@ prNorm <- function(pr_data, blank_well="A1", neg_well="A2", OD_name="OD", flu_na
 
   flu_norm_pr_data <- od_norm_pr_data
   for (flu in flu_names) {
-    flu_norm_pr_data <- fluNorm(flu_norm_pr_data, neg_well, flu)
+    flu_norm_pr_data <- fluNorm(flu_norm_pr_data, neg_well, blank_well, flu)
   }
 
   return(flu_norm_pr_data)

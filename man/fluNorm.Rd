@@ -4,12 +4,14 @@
 \alias{fluNorm}
 \title{Title}
 \usage{
-fluNorm(pr_data, neg_well, flu_name)
+fluNorm(pr_data, neg_well, blank_well, flu_name)
 }
 \arguments{
 \item{pr_data}{a long data.frame containing you plate reader data with OD normalised}
 
 \item{neg_well}{the well coordinates of a non-fluorescent control}
+
+\item{blank_well}{the well coordinates of a media blank}
 
 \item{flu_name}{the column name of the fluorescence chanel to normalise}
 }
