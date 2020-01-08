@@ -22,14 +22,20 @@ fluNorm <- function(pr_data, neg_well, blank_well, flu_name) {
   negative_data <- pr_data %>% dplyr::filter(well == neg_well)
 
   # fit polynomial model to normalised OD vs fluorescence of negative control
-  # model <- lm(negative_data[,flu_name] ~ poly(negative_data$normalised_OD, 4), raw=TRUE)
-  model <- stats::lm(negative_data$V1 ~ negative_data$normalised_OD+I(negative_data$normalised_OD^2)+I(negative_data$normalised_OD^3))
+  model <- stats::lm(V1 ~ poly(normalised_OD, 8), data = negative_data)
 
-  # normalise fluorescence against model
-  pr_data$V1 <- pr_data$V1 - (stats::coef(model)[1] +
-                                stats::coef(model)[2] * pr_data$normalised_OD +
-                                stats::coef(model)[3] * (pr_data$normalised_OD)^2 +
-                                stats::coef(model)[4] * (pr_data$normalised_OD)^3)
+  # normalise fluorescence by negating predicted autofluorescence at the given OD
+  pr_data$V1 <- pr_data$V1 - stats::predict(model, pr_data)
+
+  # plot polynomials for good measure
+  ggplot2::ggplot()+
+    ggplot2::geom_line(ggplot2::aes(x=negative_data$normalised_OD,
+                                    y=stats::predict(model, negative_data)))+
+    ggplot2::geom_point(ggplot2::aes(x=negative_data$normalised_OD, y=negative_data$V1))+
+    ggplot2::scale_x_continuous("normalised_OD")+
+    ggplot2::scale_y_continuous(flu_name)+
+    ggplot2::theme_bw()
+  ggplot2::ggsave(paste("plot-norm-curve-", flu_name, ".pdf", sep=""))
 
   # rename normalised fluorescence per cell column
   names(pr_data)[ncol(pr_data)] <- paste("normalised_", flu_name, sep = "")
