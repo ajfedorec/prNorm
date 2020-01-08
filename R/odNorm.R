@@ -8,19 +8,12 @@
 #'
 #' @examples
 odNorm <- function(pr_data, blank_well, OD_name) {
+  pr_data$normalised_OD <- pr_data[,OD_name]
 
-  normalised_OD <- c()
+  # remove background OD signal by negating blank well at each timepoint
+  pr_data <- pr_data %>%
+    dplyr::group_by(time) %>%
+    dplyr::mutate(normalised_OD = normalised_OD - normalised_OD[well==blank_well])
 
-  for (timepoint in unique(pr_data$time)) {
-    timepoint_normalised_OD <- (pr_data %>%
-                                  dplyr::filter(time == timepoint))[[OD_name]] -
-      (pr_data %>%
-         dplyr::filter(time == timepoint) %>%
-         dplyr::filter(well == blank_well))[[OD_name]]
-
-    normalised_OD <- c(normalised_OD, timepoint_normalised_OD)
-  }
-  pr_data$normalised_OD <- normalised_OD
-
-  return(pr_data)
+  return(as.data.frame(pr_data))
 }

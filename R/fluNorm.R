@@ -9,28 +9,21 @@
 #'
 #' @examples
 fluNorm <- function(pr_data, neg_well, blank_well, flu_name) {
-  first_norm_flu <- c()
-
-  for (timepoint in unique(pr_data$time)) {
-    timepoint_normalised_flu <- (pr_data %>%
-                                   dplyr::filter(time == timepoint))[[flu_name]] -
-      (pr_data %>%
-         dplyr::filter(time == timepoint) %>%
-         dplyr::filter(well == blank_well))[[flu_name]]
-
-    first_norm_flu <- c(first_norm_flu, timepoint_normalised_flu)
-  }
-  pr_data[,flu_name] <- first_norm_flu
-
-
-  # make a normalise fluorescence column
   pr_data$V1 <- pr_data[,flu_name]
 
+  # remove background fluorescence by negating blank well at each timepoint
+  pr_data <- pr_data %>%
+    dplyr::group_by(time) %>%
+    dplyr::mutate(V1 = V1 - V1[well==blank_well])
+
+  pr_data <- as.data.frame(pr_data)
+
+  #
   negative_data <- pr_data %>% dplyr::filter(well == neg_well)
 
   # fit polynomial model to normalised OD vs fluorescence of negative control
   # model <- lm(negative_data[,flu_name] ~ poly(negative_data$normalised_OD, 4), raw=TRUE)
-  model <- stats::lm(negative_data[,flu_name] ~ negative_data$normalised_OD+I(negative_data$normalised_OD^2)+I(negative_data$normalised_OD^3))
+  model <- stats::lm(negative_data$V1 ~ negative_data$normalised_OD+I(negative_data$normalised_OD^2)+I(negative_data$normalised_OD^3))
 
   # normalise fluorescence against model
   pr_data$V1 <- pr_data$V1 - (stats::coef(model)[1] +

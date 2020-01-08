@@ -4,8 +4,13 @@
 \alias{prNorm}
 \title{Title}
 \usage{
-prNorm(pr_data, blank_well = "A1", neg_well = "A2", OD_name = "OD",
-  flu_names = c("GFP"))
+prNorm(
+  pr_data,
+  blank_well = "A1",
+  neg_well = "A2",
+  OD_name = "OD",
+  flu_names = c("GFP")
+)
 }
 \arguments{
 \item{pr_data}{a long data.frame containing you plate reader data}
@@ -17,6 +22,9 @@ prNorm(pr_data, blank_well = "A1", neg_well = "A2", OD_name = "OD",
 \item{OD_name}{the column name for the optical density data}
 
 \item{flu_names}{the column names for the fluorscence data}
+}
+\value{
+
 }
 \description{
 Title
