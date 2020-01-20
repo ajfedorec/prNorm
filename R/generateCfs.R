@@ -8,16 +8,13 @@
 
 
 generate_cfs<-function(calibration_dir, date){
-
-  `%>%` <- magrittr::`%>%` #loading %>% operator from magrittr package
-
-  csv_files <- c("film.csv", "nofilm.csv")
-  plate_layout <- read.csv(paste(calibration_dir, "calibration_plate_layout.csv", sep = "/"))
+  csv_files <- c("film.csv", "nolid.csv")
+  plate_layout <- utils::read.csv(paste(calibration_dir, "calibration_plate_layout.csv", sep = "/"))
 
   #### Parse data ####
   all_values <- c()
   for (csv_file in csv_files) {
-    csv_data <- read.table(paste(calibration_dir, date, csv_file, sep="/"),
+    csv_data <- utils::read.table(paste(calibration_dir, date, csv_file, sep="/"),
                            sep = ",", blank.lines.skip = T, header = F, stringsAsFactors = F) #read the csv file
 
     start_time_idx <- which(csv_data[,1] == "Start Time") #get start and end time ids
@@ -54,8 +51,8 @@ generate_cfs<-function(calibration_dir, date){
 
   ### remove unnecessary observations ###
   summ_values <- summ_values %>%
-    dplyr::filter(((Calibrant=="microspheres") & ((measure == "Abs600") | (measure == "Abs700"))) |
-                    ((Calibrant=="fluorescein") & ((measure != "Abs600") & (measure != "Abs700"))))
+    dplyr::filter(((Calibrant=="microspheres") & ((measure == "OD600") | (measure == "OD700"))) |
+                    ((Calibrant=="fluorescein") & ((measure != "OD600") & (measure != "OD700"))))
 
   ## normalise data
   norm_values <- summ_values %>%
@@ -69,7 +66,7 @@ generate_cfs<-function(calibration_dir, date){
   ## fit linear models to the data (grouped by lid_type, measure and Calibrant)
   fit_values <- norm_values %>%
     dplyr::group_by(lid_type, measure, Calibrant) %>%
-    dplyr::do(broom::tidy(lm(normalised_value~concentration, data = .))) %>% # fit linear model (lm) and extract coefficients (broom::tidy)
+    dplyr::do(broom::tidy(stats::lm(normalised_value~concentration, data = .))) %>% # fit linear model (lm) and extract coefficients (broom::tidy)
     dplyr::select(1:5) %>%                                                   # only keep useful columns
     tidyr::spread(term, estimate) %>%                                        # spread the data so we have a column for intercept coeffs and one for slope coeffs
     dplyr::rename("intercept"=`(Intercept)`, "slope"=concentration)
@@ -100,7 +97,7 @@ generate_cfs<-function(calibration_dir, date){
     ggplot2::theme_bw(base_size = 12)
 
   #save conversion factors to a csv
-  write.csv(fit_values, paste(calibration_dir, date, 'cfs_generated.csv', sep='/'), row.names = FALSE)
+  utils::write.csv(fit_values, paste(calibration_dir, date, 'cfs_generated.csv', sep='/'), row.names = FALSE)
 
   #save plots
   ggplot2::ggsave(paste(calibration_dir, date, 'Absorbance_conversion_factors.pdf', sep='/'), plot=Abs_plot)

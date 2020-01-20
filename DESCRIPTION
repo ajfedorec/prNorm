@@ -1,7 +1,7 @@
 Package: prNorm
 Type: Package
 Title: Perform normalisation of plate reader data
-Version: 0.4.0
+Version: 0.5.0
 Author: Alex J H Fedorec
 Maintainer: Alex J H Fedorec <alexander.fedorec.13@ucl.ac.uk>
 Description: Normalises optical density data against a media blank and fluorescence data against a negative control. Can also perform calibration against microsphere (for OD) and fluorescein (for GFP) dilutions.
@@ -11,5 +11,6 @@ LazyData: true
 Imports:
   dplyr,
   tidyr,
-  broom
+  broom,
+  ggplot2
 RoxygenNote: 7.0.2
