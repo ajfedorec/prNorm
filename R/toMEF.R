@@ -48,7 +48,9 @@ toMEF <- function(pr_data, lid, GFP_gain, OD_name, conversion_factors_csv) {
   }
 
   pr_data$calibrated_OD <- pr_data$normalised_OD / OD_cf
-  pr_data$calibrated_GFP <- pr_data$normalised_GFP / GFP_cf
+
+  MFL_per_uM <- 6.02E+13 #MEFL/uM fluorescein (value from Jacob Beal's iGEM conversion excel spreadsheet)
+  pr_data$calibrated_GFP <- (pr_data$normalised_GFP / GFP_cf) * MFL_per_uM
 
   return(pr_data)
 
