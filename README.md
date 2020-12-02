@@ -1,3 +1,5 @@
+# Deprecated - please use ucl-cssb/flopr instead
+
 # Plate Reader Data Normalisation
 
 R package for the normalisation of plate reader data.
